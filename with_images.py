@@ -16,11 +16,9 @@ triangular_tail.anchor_y = triangular_tail.height//2
 axon = pyglet.image.load("axon.png")
 axon.anchor_x = axon.width // 2
 axon.anchor_y = axon.height // 2
-print(axon.width, axon.height)
 head = pyglet.image.load("head_circleless.png")
 head.anchor_x = 126
 head.anchor_y = 140
-print(head.width, head.height)
 
 triangular_neurons = pyglet.image.load("triangular_circleless.png")
 triangular_neurons.anchor_x = 80
@@ -28,16 +26,13 @@ triangular_neurons.anchor_y = 159
 
 
 charge = pyglet.image.load("charge.png")
-####################################
 charge.anchor_x = charge.width // 2
 charge.anchor_y = charge.height // 2
-##################################
 
 
 # Objects and Classes
 
 window = pyglet.window.Window(1920, 1080)
-# pyglet.gl.glClearColor(159/255,197/255,232/255,1.000)
 batch = pyglet.graphics.Batch()
 
 background_image = pyglet.image.load('background.png')
@@ -71,11 +66,6 @@ class CompleteDiagram():
     pass
 
   def draw(self):
-    # create batch
-    #batch = pyglet.graphics.Batch()
-    # add all lines to batch
-    # for root_node in receptors:
-    #   pass
     for electrode in self.electrodes:
       electrode.potential = 0.0
 
@@ -84,7 +74,6 @@ class CompleteDiagram():
 
     for electrode in self.electrodes:
       electrode.draw()
-    # add points
 
 
 class Electrode:
@@ -130,21 +119,11 @@ class Electrode:
 
 
     def draw(self):
-        # square = pyglet.shapes.Rectangle(500,350,400,200,color=(255, 255, 255),batch=batch)
-        # fl = pyglet.text.Label(f'{np.average(self.previous_200):.0f} V',
-	    #                    color=(255, 255, 255, 255),
-	    #                    font_name='Arial',
-	    #                    font_size=20,
-	    #                    x=500,
-	    #                    y=300)
         self.previous_vals[:-1] = self.previous_vals[1:]
         self.previous_vals[-1] = self.potential
         self.previous_200[:-1] = self.previous_200[1:]
         self.previous_200[-1] = self.potential
         fourier_domain = np.fft.fft(self.previous_200)
-        # w = np.fft.fftfreq(50)*256
-        # print(w)
-        # fl.draw()
         for i in range(len(self.previous_vals)):
             self.values[i].y = self.previous_vals[i]/40 + self.graph_y
             self.values[i].draw()
@@ -153,18 +132,8 @@ class Electrode:
             self.fft_values[i].y = self.graph_y + abs(fourier_domain[i+1]/300)
             self.fft_values[i].draw()
 
-        # Drawing full lines instead of dots
-        # self.lines = [shapes.Line(self.fft_values[i].x, self.fft_values[i].y, self.fft_values[i+1].x, self.fft_values[i+1].y, width=5, color=(255, 255, 255), batch=batch) for i in range(len(self.fft_values)-1)]
-
-        # for i in self.lines:
-        #     i.draw()
-
-        #print(len(self.fft_values))
-
         self.time_text.draw()
         self.freq_text.draw()
-
-        # square.draw()
 
 
 class Receptor:
@@ -204,9 +173,6 @@ class Charge:
         
         else:
             self.shape.opacity = 0
-            # if self.shape.opacity != 0:
-            #     self.shape.opacity -= 3
-            #     self.neuron.transmitting = False
             self.neuron.transmitting = False
             self.neuron.done_transmitting = True
             self.shape.x = self.neuron.start.x
@@ -252,11 +218,6 @@ class Neuron:
     self.synapse.rotation = -degrees - 5
 
     self.radius = 11
-
-    # self.head = pyglet.sprite.Sprite(triangular, x=self.end.x-10, y=self.end.y-10, batch=batch)
-    # self.head.anchor_x = self.head.width / 2
-    # self.head.anchor_y = self.head.height / 2
-    # self.head.scale = 0.05
 
     self.line = pyglet.sprite.Sprite(axon, x=(self.end.x + self.start.x)//2, y=(self.end.y + self.start.y)//2,
                                      batch=batch)
@@ -309,20 +270,10 @@ class TriangularNeuron(Neuron):
     self.line.scale_x = lenght / 230
 
     self.charge = Charge(self)
-    # self.shapes.append(self.charge)
 
     self.synapse = pyglet.sprite.Sprite(head, x=self.start.x, y=self.start.y, batch=batch)
     self.synapse.scale = 0.25
 
-    
-  # def activation(self):
-  #     self.activate()
-
-  # def activate(self):
-  #     self.charge = 1
-  #     self.activated = True
-  #     print(self.charge)
-  #     print("activated")
 
     self.shapes = [
       self.head,
@@ -342,17 +293,10 @@ class TriangularNeuron(Neuron):
     self.activated = True
 
   def done_transmition(self):
-        #self.charge = 0.005
-        # print(self.charge)
-        # print("activated")
         self.charging = True
 
 
   def get_potential(self):
-        # if (self.activated) and (self.charge <= 0.5):
-        #     self.charge += 0.1
-        #     print("It ran")
-        #     return self.charge 
 
         electrode = self.diagram.electrodes[0]
         positive_pole_point = self.point
@@ -375,14 +319,9 @@ class TriangularNeuron(Neuron):
                                   self.radius,
                                   color=(255, 0, 0),
                                   batch=batch)
-    #print(self.charge)
-    # impulse_shape.opacity = 100
 
     self.get_potential()
 
-    #if self.transmitting:
-
-        #if self.transmitting:
 
     if self.charge < self.max_charge and self.charging:
         self.charge += self.max_charge/5
@@ -474,51 +413,3 @@ if __name__ == "__main__":
 
   window.set_fullscreen(True)
   pyglet.app.run()
-
-
-# @window.event
-# def on_draw():
-#   window.clear()
-#   #batch.draw()
-#   diag1.draw()
-#   d = pyglet.clock.tick()
-#   fl = pyglet.text.Label(f'{1/d:.0f} FPS',
-#                          color=(255, 255, 255, 255),
-#                          font_name='Arial',
-#                          font_size=20,
-#                          x=10,
-#                          y=570)
-#   fl.draw()
-
-
-# diag1 = CompleteDiagram()
-# r1 = Receptor(Point(50, 60), diag1)
-# r2 = Receptor(Point(150, 60), diag1)
-# corner = Electrode(Point(1000, 600), diag1)
-
-
-# @window.event
-# def on_key_press(symbol, modifiers):
-
-#   if symbol == key.SPACE:
-#     r1.activation()
-#     r2.activation()
-
-
-# if __name__ == "__main__":
-
-#   n1 = SimpleNeuron(Point(150, 100), r1)
-#   #n1.transmitting = True
-#   t1 = TriangularNeuron(Point(90, 140), n1)
-#   n2 = SimpleNeuron(Point(190, 200), n1)
-
-#   t2 = TriangularNeuron(Point(160, 250), n2)
-#   n3 = SimpleNeuron(Point(220, 240), n2)
-
-#   nn1 = SimpleNeuron(Point(250, 100), r2)
-#   #n1.transmitting = True
-#   tt1 = TriangularNeuron(Point(190, 140), nn1)
-#   nn2 = SimpleNeuron(Point(290, 200), nn1)
-#   tt2 = TriangularNeuron(Point(260, 250), nn2)
-#   #r1.activation()
-#   pyglet.app.run()
