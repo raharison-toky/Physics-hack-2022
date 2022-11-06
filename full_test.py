@@ -66,26 +66,42 @@ class Electrode:
         self.potential = 0
         self.graph_x = 100
         self.graph_y = 350
-        self.graph_width = 800
+        self.graph_width = 300
         self.graph_height = 200
         self.radius = 3
-        self.values = [pyglet.shapes.Circle(self.graph_x+i,self.graph_y+self.graph_height//2,self.radius,color=(255,255,255),batch=batch) for i in range(0,self.graph_width,10)]
+        self.values = [pyglet.shapes.Circle(self.graph_x+i,self.graph_y+self.graph_height//2,self.radius,color=(255,255,255),batch=batch) for i in range(0,self.graph_width,6)]
         self.previous_vals = np.zeros(len(self.values))
+        self.previous_200 = np.zeros(200)
+
+        self.fft_graph_x = self.graph_x + self.graph_width + 100
+        self.fft_graph_y = self.graph_y
+        fourier_domain= np.fft.fft(self.previous_200)
+        self.fft_values = [pyglet.shapes.Circle(self.fft_graph_x+i,self.graph_y+self.graph_height//2,self.radius,color=(255,255,255),batch=batch) for i in range(0,self.graph_width,self.graph_width//20)]
+
 
     def draw(self):
         # square = pyglet.shapes.Rectangle(500,350,400,200,color=(255,255,255),batch=batch)
-        fl = pyglet.text.Label(f'{self.potential:.0f} V',
-	                       color=(255, 255, 255, 255),
-	                       font_name='Arial',
-	                       font_size=20,
-	                       x=500,
-	                       y=300)
+        # fl = pyglet.text.Label(f'{np.average(self.previous_200):.0f} V',
+	    #                    color=(255, 255, 255, 255),
+	    #                    font_name='Arial',
+	    #                    font_size=20,
+	    #                    x=500,
+	    #                    y=300)
         self.previous_vals[:-1] = self.previous_vals[1:]
         self.previous_vals[-1] = self.potential
-        fl.draw()
+        self.previous_200[:-1] = self.previous_200[1:]
+        self.previous_200[-1] = self.potential
+        fourier_domain = np.fft.fft(self.previous_200)
+        # w = np.fft.fftfreq(50)*256
+        # print(w)
+        # fl.draw()
         for i in range(len(self.previous_vals)):
             self.values[i].y = self.previous_vals[i]/3 + self.graph_y
             self.values[i].draw()
+
+        for i in range(len(self.fft_values)):
+            self.fft_values[i].y = self.graph_y + abs(fourier_domain[i+1]/25)
+            self.fft_values[i].draw()
 
         # square.draw()
 
@@ -109,6 +125,7 @@ class Charge:
         self.end = neuron.end
         self.offset = random.random()
         radius = 5
+        self.vector_length = 6
         self.shape = shapes.Circle(x=self.start.x, y=self.start.y, radius=radius, color=(255, 0, 0), batch=batch)
         self.vector = np.array([self.end.x - self.start.x, self.end.y - self.start.y])
         self.vector = self.vector /np.linalg.norm(self.vector)
@@ -116,10 +133,10 @@ class Charge:
 
 
     def move_charge(self):
-        if self.remaining_d > 5:
+        if self.remaining_d > self.vector_length:
 
-            self.shape.x += self.vector[0]*(5 - self.offset)
-            self.shape.y += self.vector[1]*(5 - self.offset)
+            self.shape.x += self.vector[0]*(self.vector_length - self.offset)
+            self.shape.y += self.vector[1]*(self.vector_length - self.offset)
             self.remaining_d = math.sqrt((self.shape.x - self.end.x)**2 + (self.shape.y - self.end.y)**2)
         
         else:
@@ -205,6 +222,9 @@ class TriangularNeuron(Neuron):
 
         self.activated = False
         self.charge = 0.005
+        self.max_charge = 0.005
+
+        self.charging = False
 
     # def activation(self):
     #     self.activate()
@@ -220,9 +240,10 @@ class TriangularNeuron(Neuron):
 
 
     def done_transmition(self):
-        self.charge = 0.005
+        #self.charge = 0.005
         print(self.charge)
         print("activated")
+        self.charging = True
 
     def get_potential(self):
         # if (self.activated) and (self.charge <= 0.5):
@@ -252,13 +273,18 @@ class TriangularNeuron(Neuron):
 
         #if self.transmitting:
 
-
+        if self.charge < self.max_charge and self.charging:
+            self.charge += self.max_charge/5
     
-        DECAY = 0.05
-        self.charge *= 1-DECAY # decrease the charge
-        float_opacity = 1.0
-        float_opacity *= 1- DECAY
-        impulse_shape.opacity = int(float_opacity)
+        elif self.charge > self.max_charge and self.charging:
+            self.charging = False
+
+        else:
+            DECAY = 0.07
+            self.charge *= 1-DECAY # decrease the charge
+            float_opacity = 1.0
+            float_opacity *= 1- DECAY
+            impulse_shape.opacity = int(float_opacity)
 
         # fl = pyglet.text.Label(f'{self.charge:.0f} V',
 	    #                    color=(255, 255, 255, 255),
