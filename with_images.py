@@ -457,7 +457,7 @@ if __name__ == "__main__":
             n5 = SimpleNeuron(Point(50 + i * TREE_WIDTH_OFFSET, 365), n3)
             t3 = TriangularNeuron(Point(100 + i * TREE_WIDTH_OFFSET, 400), n5)
         else:
-	    t1 = TriangularNeuron(Point(55 + i * TREE_WIDTH_OFFSET, 190), rec)
+            t1 = TriangularNeuron(Point(55 + i * TREE_WIDTH_OFFSET, 190), rec)
             n1 = SimpleNeuron(Point(240 + i * TREE_WIDTH_OFFSET, 150), rec)
             t2 = TriangularNeuron(Point(380 + i * TREE_WIDTH_OFFSET, 290), n1)
             n2 = SimpleNeuron(Point(210 + i * TREE_WIDTH_OFFSET, 260), n1)
