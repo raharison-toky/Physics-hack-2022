@@ -37,8 +37,11 @@ charge.anchor_y = charge.height // 2
 # Objects and Classes
 
 window = pyglet.window.Window(1920, 1080)
-pyglet.gl.glClearColor(159/255,197/255,232/255,1.000)
+# pyglet.gl.glClearColor(159/255,197/255,232/255,1.000)
 batch = pyglet.graphics.Batch()
+
+background_image = pyglet.image.load('background.png')
+background = pyglet.sprite.Sprite(background_image, x=0, y=0)
 
 
 class Point:
@@ -411,6 +414,7 @@ class SimpleNeuron(Neuron):
 @window.event
 def on_draw():
 	window.clear()
+	background.draw()
 	#batch.draw()
 	diag1.draw()
 
