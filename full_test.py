@@ -17,6 +17,10 @@ batch = pyglet.graphics.Batch()
 
 class Point:
 
+    """
+    Class for having a consistent way to define position
+    """
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -25,6 +29,10 @@ class Point:
         return math.sqrt(((self.x - point2.x)**2 + (self.y - point2.y)**2))
 
 class CompleteDiagram():
+
+    """
+    Class that contains all of the neurons
+    """
 
     def __init__(self):
         self.receptors = []
@@ -59,6 +67,11 @@ class CompleteDiagram():
 
 class Electrode:
 
+    """
+    class for checking the electric potential as it would be measured at the position on the screen and plotting it.
+    It plots the time domain for the previous 50 values and computes the FFT with the previous 200 values.
+    """
+
     def __init__(self, point: Point, diagram: CompleteDiagram):
         self.point = point
         self.diagram = diagram
@@ -69,18 +82,33 @@ class Electrode:
         self.graph_width = 300
         self.graph_height = 200
         self.radius = 3
-        self.values = [pyglet.shapes.Circle(self.graph_x+i,self.graph_y+self.graph_height//2,self.radius,color=(255,255,255),batch=batch) for i in range(0,self.graph_width,6)]
+        self.values = [pyglet.shapes.Circle(self.graph_x+i,self.graph_y+self.graph_height//2,self.radius,color=(255, 255, 255),batch=batch) for i in range(0,self.graph_width,6)]
         self.previous_vals = np.zeros(len(self.values))
         self.previous_200 = np.zeros(200)
 
         self.fft_graph_x = self.graph_x + self.graph_width + 100
         self.fft_graph_y = self.graph_y
         fourier_domain= np.fft.fft(self.previous_200)
-        self.fft_values = [pyglet.shapes.Circle(self.fft_graph_x+i,self.graph_y+self.graph_height//2,self.radius,color=(255,255,255),batch=batch) for i in range(0,self.graph_width,self.graph_width//20)]
+        self.fft_values = [pyglet.shapes.Circle(self.fft_graph_x+i,self.graph_y+self.graph_height//2,self.radius,color=(255, 255, 255),batch=batch) for i in range(0,self.graph_width,self.graph_width//20)]
+        self.lines = [shapes.Line(self.fft_values[i].x, self.fft_values[i].y, self.fft_values[i+1].x, self.fft_values[i+1].y, width=5, color=(255, 255, 255), batch=batch) for i in range(len(self.fft_values)-1)]
+
+        self.time_text = pyglet.text.Label("Time domain",
+	                       color=(255, 255, 255, 255),
+	                       font_name='Arial',
+	                       font_size=20,
+	                       x=self.graph_x,
+	                       y=self.graph_y - 60)
+
+        self.freq_text = pyglet.text.Label("Frequency domain",
+	                       color=(255, 255, 255, 255),
+	                       font_name='Arial',
+	                       font_size=20,
+	                       x=self.fft_graph_x,
+	                       y=self.graph_y - 60)
 
 
     def draw(self):
-        # square = pyglet.shapes.Rectangle(500,350,400,200,color=(255,255,255),batch=batch)
+        # square = pyglet.shapes.Rectangle(500,350,400,200,color=(255, 255, 255),batch=batch)
         # fl = pyglet.text.Label(f'{np.average(self.previous_200):.0f} V',
 	    #                    color=(255, 255, 255, 255),
 	    #                    font_name='Arial',
@@ -102,6 +130,17 @@ class Electrode:
         for i in range(len(self.fft_values)):
             self.fft_values[i].y = self.graph_y + abs(fourier_domain[i+1]/25)
             self.fft_values[i].draw()
+
+        # Drawing full lines instead of dots
+        # self.lines = [shapes.Line(self.fft_values[i].x, self.fft_values[i].y, self.fft_values[i+1].x, self.fft_values[i+1].y, width=5, color=(255, 255, 255), batch=batch) for i in range(len(self.fft_values)-1)]
+
+        # for i in self.lines:
+        #     i.draw()
+
+        print(len(self.fft_values))
+
+        self.time_text.draw()
+        self.freq_text.draw()
 
         # square.draw()
 
@@ -134,12 +173,13 @@ class Charge:
 
     def move_charge(self):
         if self.remaining_d > self.vector_length:
-
+            self.shape.opacity = 255
             self.shape.x += self.vector[0]*(self.vector_length - self.offset)
             self.shape.y += self.vector[1]*(self.vector_length - self.offset)
             self.remaining_d = math.sqrt((self.shape.x - self.end.x)**2 + (self.shape.y - self.end.y)**2)
         
         else:
+            self.shape.opacity = 0
             # if self.shape.opacity != 0:
             #     self.shape.opacity -= 3
             #     self.neuron.transmitting = False
@@ -175,7 +215,7 @@ class Neuron:
 
         self.start = self.parent.point
         self.end = self.point
-        self.synapse = shapes.Rectangle(self.start.x, self.start.y, width, width, color=(255,255,255), batch=batch)
+        self.synapse = shapes.Rectangle(self.start.x, self.start.y, width, width, color=(255, 255, 255), batch=batch)
         self.synapse.anchor_x = width/2
         self.synapse.anchor_y = width/2
         dx = self.end.x - self.end.y
@@ -185,9 +225,9 @@ class Neuron:
         self.synapse.rotation = 45
 
         self.radius = 11
-        self.head = shapes.Circle(self.end.x, self.end.y, self.radius, color=(255,255,255), batch=batch)
+        self.head = shapes.Circle(self.end.x, self.end.y, self.radius, color=(255, 255, 255), batch=batch)
 
-        self.line = shapes.Line(self.start.x, self.start.y, self.end.x, self.end.y, width=5, color=(255,255,255), batch=batch)
+        self.line = shapes.Line(self.start.x, self.start.y, self.end.x, self.end.y, width=5, color=(255, 255, 255), batch=batch)
 
         self.shapes = [self.line,self.synapse,self.head,]
 
@@ -262,6 +302,9 @@ class TriangularNeuron(Neuron):
         #print(K_e * self.charge * (1 / positive_pole_distance - 1 / negative_pole_distance))
 
     def draw(self):
+
+        #Make the color dependent on current charge to visually distinguish dipoles
+        self.shapes[-2].color = (np.array([255,0,0]) + np.array([0,255,255])*(self.max_charge-self.charge)/self.max_charge).astype(int)
         super().draw()
 
         # draw charge intensity (aura)
@@ -286,6 +329,7 @@ class TriangularNeuron(Neuron):
             float_opacity *= 1- DECAY
             impulse_shape.opacity = int(float_opacity)
 
+    
         # fl = pyglet.text.Label(f'{self.charge:.0f} V',
 	    #                    color=(255, 255, 255, 255),
 	    #                    font_name='Arial',
