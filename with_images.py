@@ -446,24 +446,24 @@ def on_key_press(symbol, modifiers):
 
 if __name__ == "__main__":
 
-    for i, rec in enumerate(diag1.receptors):
-        if i % 2:
-            n1 = SimpleNeuron(Point(330 + i * TREE_WIDTH_OFFSET, 90), rec)
-            n2 = SimpleNeuron(Point(340 + i * TREE_WIDTH_OFFSET, 300), n1)
-            t1 = TriangularNeuron(Point(400 + i * TREE_WIDTH_OFFSET, 370), n2)
-            n3 = SimpleNeuron(Point(120 + i * TREE_WIDTH_OFFSET, 180), rec)
-            n4 = SimpleNeuron(Point(200 + i * TREE_WIDTH_OFFSET, 290), n3)
-            t2 = TriangularNeuron(Point(250 + i * TREE_WIDTH_OFFSET, 385), n4)
-            n5 = SimpleNeuron(Point(50 + i * TREE_WIDTH_OFFSET, 365), n3)
-            t3 = TriangularNeuron(Point(100 + i * TREE_WIDTH_OFFSET, 400), n5)
-        else:
-	    t1 = TriangularNeuron(Point(55 + i * TREE_WIDTH_OFFSET, 190), rec)
-            n1 = SimpleNeuron(Point(240 + i * TREE_WIDTH_OFFSET, 150), rec)
-            t2 = TriangularNeuron(Point(380 + i * TREE_WIDTH_OFFSET, 290), n1)
-            n2 = SimpleNeuron(Point(210 + i * TREE_WIDTH_OFFSET, 260), n1)
-            n3 = SimpleNeuron(Point(150 + i * TREE_WIDTH_OFFSET, 310), n2)
-            t3 = TriangularNeuron(Point(60 + i * TREE_WIDTH_OFFSET, 400), n3)
-            t4 = TriangularNeuron(Point(300 + i * TREE_WIDTH_OFFSET, 380), n2)
+  for i, rec in enumerate(diag1.receptors):
+    if i % 2:
+      n1 = SimpleNeuron(Point(330 + i * TREE_WIDTH_OFFSET, 90), rec)
+      n2 = SimpleNeuron(Point(340 + i * TREE_WIDTH_OFFSET, 300), n1)
+      t1 = TriangularNeuron(Point(400 + i * TREE_WIDTH_OFFSET, 370), n2)
+      n3 = SimpleNeuron(Point(120 + i * TREE_WIDTH_OFFSET, 180), rec)
+      n4 = SimpleNeuron(Point(200 + i * TREE_WIDTH_OFFSET, 290), n3)
+      t2 = TriangularNeuron(Point(250 + i * TREE_WIDTH_OFFSET, 385), n4)
+      n5 = SimpleNeuron(Point(50 + i * TREE_WIDTH_OFFSET, 365), n3)
+      t3 = TriangularNeuron(Point(100 + i * TREE_WIDTH_OFFSET, 400), n5)
+    else:
+      t1 = TriangularNeuron(Point(55 + i * TREE_WIDTH_OFFSET, 190), rec)
+      n1 = SimpleNeuron(Point(240 + i * TREE_WIDTH_OFFSET, 150), rec)
+      t2 = TriangularNeuron(Point(380 + i * TREE_WIDTH_OFFSET, 290), n1)
+      n2 = SimpleNeuron(Point(210 + i * TREE_WIDTH_OFFSET, 260), n1)
+      n3 = SimpleNeuron(Point(150 + i * TREE_WIDTH_OFFSET, 310), n2)
+      t3 = TriangularNeuron(Point(60 + i * TREE_WIDTH_OFFSET, 400), n3)
+      t4 = TriangularNeuron(Point(300 + i * TREE_WIDTH_OFFSET, 380), n2)
 #             t1 = TriangularNeuron(Point(55 + i * TREE_WIDTH_OFFSET, 190), rec)
 #             n1 = SimpleNeuron(Point(200 + i * TREE_WIDTH_OFFSET, 120), rec)
 #             t2 = TriangularNeuron(Point(380 + i * TREE_WIDTH_OFFSET, 110), n1)
@@ -472,8 +472,8 @@ if __name__ == "__main__":
 #             n3 = SimpleNeuron(Point(270 + i * TREE_WIDTH_OFFSET, 290), n2)
 #             t4 = TriangularNeuron(Point(400 + i * TREE_WIDTH_OFFSET, 380), n3)
 
-    window.set_fullscreen(True)
-    pyglet.app.run()
+  window.set_fullscreen(True)
+  pyglet.app.run()
 
 
 # @window.event
