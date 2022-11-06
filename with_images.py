@@ -37,7 +37,7 @@ charge.anchor_y = charge.height // 2
 # Objects and Classes
 
 window = pyglet.window.Window(1920, 1080)
-pyglet.gl.glClearColor(0.9, 0.9, 0.7, 0.9)
+pyglet.gl.glClearColor(159/255,197/255,232/255,1.000)
 batch = pyglet.graphics.Batch()
 
 
