@@ -5,6 +5,7 @@ from pyglet import shapes
 from pyglet.window import key
 import numpy as np
 import random
+
 # Main File
 # K_e * q / r
 # Constants
@@ -12,7 +13,8 @@ K_e = 8.9875517923E9  # Coulomb's constant
 
 # Objects and Classes
 
-window = pyglet.window.Window(1000, 600)
+window = pyglet.window.Window(1000, 1080)
+pyglet.gl.glClearColor(0.9, 0.9, 0.7, 0.9)
 batch = pyglet.graphics.Batch()
 
 class Point:
@@ -137,7 +139,7 @@ class Electrode:
         # for i in self.lines:
         #     i.draw()
 
-        print(len(self.fft_values))
+        #print(len(self.fft_values))
 
         self.time_text.draw()
         self.freq_text.draw()
@@ -162,7 +164,7 @@ class Charge:
         self.neuron = neuron
         self.start = neuron.start
         self.end = neuron.end
-        self.offset = random.random()
+        self.offset = 0*random.random()
         radius = 5
         self.vector_length = 6
         self.shape = shapes.Circle(x=self.start.x, y=self.start.y, radius=radius, color=(255, 0, 0), batch=batch)
@@ -278,11 +280,10 @@ class TriangularNeuron(Neuron):
     def activate(self):
         self.activated = True
 
-
     def done_transmition(self):
         #self.charge = 0.005
-        print(self.charge)
-        print("activated")
+        # print(self.charge)
+        # print("activated")
         self.charging = True
 
     def get_potential(self):
@@ -347,11 +348,62 @@ class SimpleNeuron(Neuron):
         self.transmitting = False
         self.charge = Charge(self)
         self.shapes.append(self.charge)
-        print("Hello world")
+        # print("Hello world")
         self.transmitting = False
 
     def activate(self):
         pass
+
+# @window.event
+# def on_draw():
+# 	window.clear()
+# 	#batch.draw()
+# 	diag1.draw()
+
+# diag1 = CompleteDiagram()
+
+# TREE_WIDTH_OFFSET = 480
+# NUM_RECEPTORS = 4
+# for i in range(NUM_RECEPTORS):
+# 	if i % 2:
+# 		Receptor(Point(200 + i * TREE_WIDTH_OFFSET, 40), diag1)
+# 	else:
+# 		Receptor(Point(50 + i * TREE_WIDTH_OFFSET, 30), diag1)
+
+# corner = Electrode(Point(0, 0), diag1)
+
+
+# @window.event
+# def on_key_press(symbol, modifiers):
+# 	if symbol == key.SPACE:
+# 		for rec in diag1.receptors:
+# 			rec.activation()
+
+
+# if __name__ == "__main__":
+
+#     for i, rec in enumerate(diag1.receptors):
+#         if i % 2:
+#             n1 = SimpleNeuron(Point(330 + i * TREE_WIDTH_OFFSET, 90), rec)
+#             n2 = SimpleNeuron(Point(340 + i * TREE_WIDTH_OFFSET, 300), n1)
+#             t1 = TriangularNeuron(Point(400 + i * TREE_WIDTH_OFFSET, 370), n2)
+#             n3 = SimpleNeuron(Point(120 + i * TREE_WIDTH_OFFSET, 180), rec)
+#             n4 = SimpleNeuron(Point(200 + i * TREE_WIDTH_OFFSET, 290), n3)
+#             t2 = TriangularNeuron(Point(250 + i * TREE_WIDTH_OFFSET, 385), n4)
+#             n5 = SimpleNeuron(Point(50 + i * TREE_WIDTH_OFFSET, 365), n3)
+#             t3 = TriangularNeuron(Point(100 + i * TREE_WIDTH_OFFSET, 400), n5)
+#         else:
+#             t1 = TriangularNeuron(Point(55 + i * TREE_WIDTH_OFFSET, 190), rec)
+#             n1 = SimpleNeuron(Point(200 + i * TREE_WIDTH_OFFSET, 120), rec)
+#             t2 = TriangularNeuron(Point(380 + i * TREE_WIDTH_OFFSET, 110), n1)
+#             n2 = SimpleNeuron(Point(180 + i * TREE_WIDTH_OFFSET, 310), n1)
+#             t3 = TriangularNeuron(Point(40 + i * TREE_WIDTH_OFFSET, 400), n2)
+#             n3 = SimpleNeuron(Point(270 + i * TREE_WIDTH_OFFSET, 290), n2)
+#             t4 = TriangularNeuron(Point(400 + i * TREE_WIDTH_OFFSET, 380), n3)
+
+#     window.set_fullscreen(True)
+#     pyglet.app.run()
+
 
 @window.event
 def on_draw():
