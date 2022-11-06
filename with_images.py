@@ -429,9 +429,14 @@ corner = Electrode(Point(0, 0), diag1)
 
 @window.event
 def on_key_press(symbol, modifiers):
-	if symbol == key.SPACE:
-		for rec in diag1.receptors:
-			rec.activation()
+	if symbol == key.LEFT:
+		for i, rec in enumerate(diag1.receptors):
+			if i % 2 == 0:
+				rec.activation()
+	if symbol == key.RIGHT:
+		for i, rec in enumerate(diag1.receptors):
+			if i % 2 == 1:
+				rec.activation()
 
 
 
