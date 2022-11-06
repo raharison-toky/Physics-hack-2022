@@ -13,7 +13,7 @@ K_e = 8.9875517923E9  # Coulomb's constant
 
 # Objects and Classes
 
-window = pyglet.window.Window(1000, 1080)
+window = pyglet.window.Window(1000, 600)
 pyglet.gl.glClearColor(0.9, 0.9, 0.7, 0.9)
 batch = pyglet.graphics.Batch()
 
